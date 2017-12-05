@@ -1,0 +1,149 @@
+
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-icon/iron-icon.html" async>
+<link rel="import" href="../paper-input/paper-input.html" async>
+
+<dom-module id="pt-tags-input">
+  <template>
+    <style>
+			:host {
+				display: block;
+			}
+
+			.container {
+				@apply --layout-vertical;
+			}
+
+			.tags {
+				@apply(--layout-horizontal);
+				@apply --layout-center;
+				@apply --layout-wrap;
+			}
+
+			.tag {
+				background: var(--paper-indigo-500);
+				color: white;
+				border-radius: 5px;
+				padding: 1px 2px;
+				margin: 2px;
+				border: 1px solid #999;
+			}
+
+			iron-icon {
+				--iron-icon-height: 12px;
+				--iron-icon-width: 12px;
+			}
+		</style>
+		<div class="container">
+			<div class="tags">
+				<template is="dom-repeat" items="[[tags]]" as="tag">
+					<div class="tag">
+						<span>[[tag]]</span>
+						<iron-icon
+								tabindex="0"
+								hidden$="[[noEdit]]"
+								icon="close"
+								on-keydown="_onRemoveKeydown"
+								on-tap="_removeTag">
+						</iron-icon>
+					</div>
+				</template>
+			</div>
+			<paper-input
+					id="input"
+					no-label-float
+					label="[[label]]"
+					autofocus$="[[autofocus]]"
+					minlength="[[minLength]]"
+					maxlength="[[maxLength]]"
+					on-keydown="_onInputKeydown"
+					value="{{tag}}" disabled="[[disabled]]">
+			</paper-input>
+		</div>
+  </template>
+
+  <script>
+    /**
+     * `pt-tags-input`
+     * Simple Tags Input 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class PtTagsInput extends Polymer.Element {
+      static get is() { return 'pt-tags-input'; }
+
+      static get properties(){
+        return {
+        label: String,
+        name: String,
+        disabled: Boolean,
+        minLength: Number,
+        maxLength: Number,
+        tags: {
+          type: Array,
+          value(){
+          return []
+          },
+          notify: true
+        }
+        }
+      }
+  
+      _onInputKeydown(e){
+        this.$.input.invalid = false;
+        if ((this.separator && this.separator === e.key)
+          || (!this.separator
+            && (e.keyCode == 9 || e.key == 'Tab'
+              || e.keyCode == 13 || e.key == 'Enter'
+              || e.keyCode == 27 || e.key == 'Escape'
+              || e.keyCode == 32 || e.key == ' '))) { 
+        var tag = this.tag.trim();
+        if (tag) {
+          e.preventDefault();
+          this.tag = this.add(tag) ? '' : tag.trim();
+          this.focus();
+        }
+        }
+      }
+
+      add(tag){
+        if (tag
+          && (!this.minLength || tag.length >= this.minLength)
+          && (!this.maxLength || tag.length <= this.maxLength)
+          && !this.tags.includes(tag)) {
+        this.push('tags', tag);
+        return true;
+        } else {
+          if (this.tag == tag) this.$.input.invalid = true;
+        return false;
+        }
+      }
+  
+      /**
+       * Remove a tag by index.
+       */
+      remove(index){
+        if (!this.disabled) {
+        this.splice('tags', index, 1);
+        }
+      }
+  
+      _removeTag(e){
+        this.remove(e.model.index);
+        this.focus();
+      }
+  
+      get value(){
+        return this.tags;
+      }
+  
+      set value(tags){
+        this.set('tags', tags || []);
+      }
+    }
+
+    window.customElements.define(PtTagsInput.is, PtTagsInput);
+  </script>
+</dom-module>
