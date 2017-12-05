@@ -2,6 +2,8 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-icon/iron-icon.html" async>
 <link rel="import" href="../paper-input/paper-input.html" async>
+<link rel="import" href="../iron-iconset-svg/iron-iconset-svg.html" async>
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html" async>
 
 <dom-module id="pt-tags-input">
   <template>
@@ -11,11 +13,11 @@
 			}
 
 			.container {
-				@apply --layout-vertical;
+			  @apply --layout-vertical;
 			}
 
 			.tags {
-				@apply(--layout-horizontal);
+				@apply --layout-horizontal;
 				@apply --layout-center;
 				@apply --layout-wrap;
 			}
@@ -33,30 +35,39 @@
 				--iron-icon-height: 12px;
 				--iron-icon-width: 12px;
 			}
-		</style>
+    </style>
+    
+    <iron-iconset-svg name="icons" size="24">
+      <svg>
+        <defs>
+          <g id="close">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </g>
+        </defs>
+      </svg>
+    </iron-iconset-svg>
+
 		<div class="container">
 			<div class="tags">
 				<template is="dom-repeat" items="[[tags]]" as="tag">
 					<div class="tag">
 						<span>[[tag]]</span>
 						<iron-icon
-								tabindex="0"
 								hidden$="[[noEdit]]"
 								icon="close"
-								on-keydown="_onRemoveKeydown"
 								on-tap="_removeTag">
 						</iron-icon>
 					</div>
 				</template>
 			</div>
 			<paper-input
-					id="input"
-					no-label-float
+          id="input"
+          no-label-float 
 					label="[[label]]"
-					autofocus$="[[autofocus]]"
 					minlength="[[minLength]]"
 					maxlength="[[maxLength]]"
-					on-keydown="_onInputKeydown"
+					on-keydown="_onKeydown"
 					value="{{tag}}" disabled="[[disabled]]">
 			</paper-input>
 		</div>
@@ -71,7 +82,7 @@
      * @polymer
      * @demo demo/index.html
      */
-    class PtTagsInput extends Polymer.Element {
+    class PtTagsInput extends Polymer.GestureEventListeners(Polymer.Element) {
       static get is() { return 'pt-tags-input'; }
 
       static get properties(){
@@ -91,7 +102,7 @@
         }
       }
   
-      _onInputKeydown(e){
+      _onKeydown(e){
         this.$.input.invalid = false;
         if ((this.separator && this.separator === e.key)
           || (!this.separator
@@ -120,10 +131,7 @@
         return false;
         }
       }
-  
-      /**
-       * Remove a tag by index.
-       */
+
       remove(index){
         if (!this.disabled) {
         this.splice('tags', index, 1);
