@@ -24,10 +24,6 @@ Simple Tags Input
  <pt-tags-input label="Tags Input" min-length="3" max-length="10"></pt-tags-input>
 ```
 
-## Credits
-
-@jesuslopezlugo
-
 ## License
 
 Apache License 2.0
