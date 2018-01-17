@@ -3,7 +3,6 @@
 <link rel="import" href="../paper-input/paper-input.html" async>
 <link rel="import" href="../iron-iconset-svg/iron-iconset-svg.html" async>
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html" async>
-<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 
 <dom-module id="pt-tags-input">
@@ -83,7 +82,7 @@
 	   * @polymer
 	   * @demo demo/index.html
 	   */
-	  class PtTagsInput extends Polymer.mixinBehaviors([Polymer.IronValidatableBehavior, Polymer.IronFormElementBehavior, Polymer.GestureEventListeners], Polymer.Element) {
+	  class PtTagsInput extends Polymer.mixinBehaviors([Polymer.IronValidatableBehavior, Polymer.GestureEventListeners], Polymer.Element) {
 		static get is(){
 		  return 'pt-tags-input';
 		}
